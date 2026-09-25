@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 /**
  * Exercise (Chapter: APIs, JSON, and Files) — reading data from a file into objects.
@@ -109,7 +110,16 @@ public class NumberTriangle {
     //       value of wherever you ended up. An empty path means "stay here".
     //       Hint: String#charAt(int) and String#length() are all you need for the
     //       iterative version; a recursive version can use String#substring(1).
-    return 0;
+    NumberTriangle curr = this;
+    for (int i = 0; i < path.length(); i++) {
+      char step = path.charAt(i);
+      if (step == 'l') {
+        curr = curr.left;
+      } else if (step == 'r') {
+        curr = curr.right;
+      }
+    }
+    return curr.getRoot();
   }
 
   /**
@@ -173,13 +183,33 @@ public class NumberTriangle {
 
     // We need to return the top of the NumberTriangle, so here is a variable for it.
     NumberTriangle top = null;
+    NumberTriangle[] prev = null;
 
     String line = br.readLine();
     while (line != null) {
+      line = line.trim();
+      if (!line.isEmpty()) {
+        String[] tokens = line.split("\\s+");
+        NumberTriangle[] curr = new NumberTriangle[tokens.length];
 
-      // Remove this line when you are done; it is here so that the starter code
-      // prints the contents of the file when you run it.
-      System.out.println(line);
+        for (int i = 0; i < tokens.length; i++) {
+          curr[i] = new NumberTriangle(Integer.parseInt(tokens[i]));
+        }
+
+        if (top == null) {
+          top = curr[0];
+        }
+
+        if (prev != null) {
+          for (int i = 0; i < prev.length; i++) {
+            if (prev[i] != null) {
+              prev[i].setLeft(curr[i]);
+              prev[i].setRight(curr[i + 1]);
+            }
+          }
+        }
+        prev = curr;
+      }
 
       // TODO: process the line. Splitting it on spaces gives you the numbers in
       //       this row; make a NumberTriangle for each one, then wire this row up
