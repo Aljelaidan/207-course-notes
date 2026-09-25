@@ -40,7 +40,7 @@ public class OddSum {
             for (int i = 1; i < arr.length; i += 2) {
                 sum = sum + arr[i];
             }
+            return sum;
         }
-        return sum;
     }
 }
