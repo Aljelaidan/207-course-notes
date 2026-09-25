@@ -33,7 +33,7 @@ public class OddSum {
         //       (e.g. arr[i] gives you the item at index i).
         if (arr.length <= 1)
         {
-            return 0
+            return 0;
         }
         else{
             int sum = 0;
