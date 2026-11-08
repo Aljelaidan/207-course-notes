@@ -27,19 +27,85 @@ abstract class Item {
   + getCatalogueNumber() : String
 }
 
-' TODO: add boxes for Book and DVD. What differs between them — a whole class,
-'       or just the value of a loan-period field?
+interface Borrowable {
+  + getLoanPeriodDays() : int
+  + isOnLoan() : boolean
+  + borrow(member : Member) : void
+  + returnItem() : void
+  + addHold(hold : Hold) : void
+}
 
-' TODO: reference-only items cannot be borrowed at all. Decide how to say that
-'       in the diagram: a subclass, or an interface (e.g. "Borrowable") that
-'       only some items realize?
+class Book {
+  - onLoan : boolean
+  - holds : List<Hold>
+  + getLoanPeriodDays() : int
+  + isOnLoan() : boolean
+  + borrow(member : Member) : void
+  + returnItem() : void
+  + addHold(hold : Hold) : void
+}
 
-' TODO: add Member and Librarian. What do they have in common? Add the common
-'       supertype if you think one is warranted.
+class DVD {
+  - onLoan : boolean
+  - holds : List<Hold>
+  + getLoanPeriodDays() : int
+  + isOnLoan() : boolean
+  + borrow(member : Member) : void
+  + returnItem() : void
+  + addHold(hold : Hold) : void
+}
 
-' TODO: add whatever represents a hold, and connect it to the classes that need
-'       to know about it.
+class ReferenceItem {
+}
 
-' TODO: add the arrows between all of your types.
+abstract class User {
+  - name : String
+  + getName() : String
+}
+
+class Member {
+  - memberNumber : String
+  - lateFee : double
+  - holds : List<Hold>
+  + login(memberNumber : String) : boolean
+  + placeHold(item : Borrowable) : Hold
+  + getLateFee() : double
+  + setLateFee(fee : double) : void
+}
+
+class Librarian {
+  + addItem(catalogue : Catalogue, item : Item) : void
+  + waiveLateFee(member : Member) : void
+}
+
+class Hold {
+  - member : Member
+  - item : Borrowable
+  + getMember() : Member
+  + getItem() : Borrowable
+}
+
+class Catalogue {
+  - items : List<Item>
+  + addItem(item : Item) : void
+  + find(catalogueNumber : String) : Item
+}
+
+Item <|-- Book
+Item <|-- DVD
+Item <|-- ReferenceItem
+Borrowable <|.. Book
+Borrowable <|.. DVD
+User <|-- Member
+User <|-- Librarian
+Catalogue o--> "*" Item
+Member --> "*" Hold
+Hold --> "1" Member
+Hold --> "1" Borrowable
+Book --> "*" Hold
+DVD --> "*" Hold
+Librarian ..> Catalogue
+Librarian ..> Member
+
 
 @enduml
